@@ -74,18 +74,18 @@ def make_csk_cutter(cx, cy, cz, axis, depth, hole_r, csk_r, csk_depth):
 # Hole 1: upper, centered at (X=W/2, Y=0..T, Z=H-5=15)
 # Hole 2: lower, centered at (X=W/2, Y=0..T, Z=5)
 for z_center in [H - 5.0, 5.0]:
-    # Through cylinder from Y=0 to Y=T
+    # XZ workplane sits at Y=0; extrude goes in +Y.
+    # offset vector is in world coords: (X=W/2, Y=0, Z=z_center)
     through_cyl = (
         cq.Workplane("XZ")
-        .transformed(offset=cq.Vector(W / 2, z_center, 0))
+        .transformed(offset=cq.Vector(W / 2, 0, z_center))
         .circle(hole_r)
-        .extrude(T)
-        .translate((0, 0, 0))  # starts at Y=0, goes to Y=T
+        .extrude(T)   # Y=0 → Y=T
     )
-    # Countersink frustum at Y=0 (entry face): large radius at Y=0, small at Y=csk_depth
+    # Countersink: large opening at Y=0 (front face), narrows to hole_r at Y=csk_depth
     csk_frustum = (
         cq.Workplane("XZ")
-        .transformed(offset=cq.Vector(W / 2, z_center, 0))
+        .transformed(offset=cq.Vector(W / 2, 0, z_center))
         .circle(csk_r)
         .workplane(offset=csk_depth)
         .circle(hole_r)
