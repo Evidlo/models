@@ -74,23 +74,13 @@ def make_csk_cutter(cx, cy, cz, axis, depth, hole_r, csk_r, csk_depth):
 # Hole 1: upper, centered at (X=W/2, Y=0..T, Z=H-5=15)
 # Hole 2: lower, centered at (X=W/2, Y=0..T, Z=5)
 for z_center in [H - 5.0, 5.0]:
-    # XZ workplane sits at Y=0; extrude goes in +Y.
-    # offset vector is in world coords: (X=W/2, Y=0, Z=z_center)
-    through_cyl = (
-        cq.Workplane("XZ")
-        .transformed(offset=cq.Vector(W / 2, 0, z_center))
-        .circle(hole_r)
-        .extrude(T)   # Y=0 → Y=T
-    )
-    # Countersink: large opening at Y=0 (front face), narrows to hole_r at Y=csk_depth
-    csk_frustum = (
-        cq.Workplane("XZ")
-        .transformed(offset=cq.Vector(W / 2, 0, z_center))
-        .circle(csk_r)
-        .workplane(offset=csk_depth)
-        .circle(hole_r)
-        .loft()
-    )
+    origin = cq.Vector(W / 2, 0, z_center)
+    drill_dir = cq.Vector(0, 1, 0)  # +Y: front face → back face
+    # Through-hole cylinder Y=0..T
+    through_cyl = cq.CQ(cq.Solid.makeCylinder(hole_r, T, pnt=origin, dir=drill_dir))
+    # Countersink frustum: large (csk_r) at Y=0, narrows to hole_r at Y=csk_depth
+    csk_frustum = cq.CQ(cq.Solid.makeCone(csk_r, hole_r, csk_depth,
+                                           pnt=origin, dir=drill_dir))
     bracket = bracket.cut(through_cyl).cut(csk_frustum)
 
 # ── Horizontal plate hole ─────────────────────────────────────────────────────
