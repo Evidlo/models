@@ -4,7 +4,7 @@ import math
 # All dimensions in mm
 W = 20.0   # width (X direction)
 H = 20.0   # height of vertical plate (Z direction)
-D = 10.0   # depth of horizontal leg (Y direction)
+D = 20.0   # depth of horizontal leg (Y direction)
 T = 2.5    # material thickness
 
 hole_r = 1.5    # 3mm drill radius
