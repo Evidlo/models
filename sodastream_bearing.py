@@ -2,18 +2,31 @@
 # Endcaps for binoculars
 
 import cadquery as cq
+# Evan Widoski - 2025-12-12
+# pillow block bearing for sodastream internals
+
 from cadquery.vis import show
 
-base_height = 1
-wall = 2
-diam = 27.2
-height = 5
+width = 20
+height = 14
+depth = 5
+diam = 9
 
-result = (
-    cq.Workplane('front')
-    .circle((diam + wall)/2).extrude(base_height)
-    .workplane().circle((diam + wall)/2).circle(diam/2).extrude(height)
+
+base = (
+    cq.Workplane("XY")
+    .rect(width, height)
+    .extrude(depth)
 )
+
+cutout = (
+    cq.Workplane("XY")
+    .center(0, diam/2-height/2 + 4)
+    .circle(diam / 2)
+    .extrude(depth)
+)
+
+result = base.cut(cutout)
 
 # Render the solid
 show(result)
