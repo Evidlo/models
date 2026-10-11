@@ -6,3 +6,6 @@ tmp/
 **/\~\$*
 *.stl
 *.STL
+
+**/Thumbs.db
+octave-workspace
